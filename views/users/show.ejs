@@ -1,0 +1,41 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <h1><%= user.username %></h1>
+    <div class="row">
+        <div class="col-md-3">
+            <img src="<%= user.avatar %>" alt="User's Avatar" class="img-circle">
+            <h4><%= user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1) %> <%= user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1) %></h4>
+            <p><a href="mailto:<%= user.email %>"><%= user.email %></a></p>        
+        </div>
+        <div class="col-md-9 text-centre profile-content">
+            <h2>List of campgrounds created by <%= user.username %></h2><br>
+            <% if (campgrounds.length == 0 && currentUser != req.user) { %>
+                <p>User has not created any campgrounds yet.</p>
+            <% } %>
+            <% if (campgrounds.length == 0 && currentUser == req.user) { %>
+                <br>
+                <p>You have not created any camprgounds yet.</p>
+                <p><a href="/campgrounds/new">Click here</a> to start creating some camprgounds!</p>
+            <% } if (campgrounds.length>0) { %>
+                <div class="row text-center" style="display:flex; flex-wrap:wrap;">
+                    <% campgrounds.forEach(function(campground){ %>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="thumbnail">
+                                <img src = "<%= campground.image %>">
+                                <div class="caption">
+                                    <h4><%= campground.name %></h4>
+                                </div>
+                                <p>
+                                    <a href="/campgrounds/<%= campground._id %>" class="btn btn-info">More Info</a>
+                                </p>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>
