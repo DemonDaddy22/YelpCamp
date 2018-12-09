@@ -1,0 +1,19 @@
+<% include ./partials/header %>
+    
+    <div class="row">
+        <h1 style="text-align: center; font-weight: bold; color: #505356">Change Password Form</h1>
+        <div style="width: 30%; margin: 25px auto;">
+            <form action="/changepw" method="POST">
+                <legend>Enter registered e-mail id for further instructions</legend>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" autofocus class="form-control">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary">Reset Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+<% include ./partials/footer %>
