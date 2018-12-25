@@ -10,14 +10,15 @@ var express            = require("express"),
     methodOverride     = require("method-override"),
     Campground         = require("./models/campground"),
     Comment            = require("./models/comment"),
-    Review            = require("./models/review"),
+    Review             = require("./models/review"),
     User               = require("./models/user"),
     seedDB             = require("./seeds");
     
 var campgroundRoutes   = require("./routes/campgrounds"),
     commentRoutes      = require("./routes/comments"),
     reviewRoutes       = require("./routes/reviews"),
-    indexRoutes        = require("./routes/index");
+    indexRoutes        = require("./routes/index"),
+    userRoutes         = require("./routes/users");
 
 mongoose.connect(process.env.DATABASEURL, {useNewUrlParser: true});
 
@@ -34,7 +35,7 @@ app.locals.moment = require('moment');
 app.use(require("express-session")({
     secret: "Once again Rusty wins!",
     resave: false,
-    saveUnintialized: false
+    saveUninitialized: false
 }));
 
 app.use(passport.initialize());
@@ -55,6 +56,7 @@ app.use(function(req, res, next){
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/reviews", reviewRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
+app.use("/campgrounds/profile", userRoutes);
 app.use(indexRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(){

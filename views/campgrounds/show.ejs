@@ -4,10 +4,9 @@
    <div class="row">
       <div class="col-md-3 set-bot">
          <p class="lead">YelpCamp</p>
-         <div class="list-group">
-            <li class="list-group-item active">Info 1</li>
-            <li class="list-group-item">Info 2</li>
-            <li class="list-group-item">Info 3</li>
+         <div class="list-group side-bar">
+            <li class="list-group-item  active-tab"><a href="/campgrounds/<%= campground._id %>" class="side-anchors"><%= campground.name %></a></li>
+            <li class="list-group-item"><a href="/campgrounds/<%= campground._id %>/reviews" class="side-anchors"> Reviews </a></li>
          </div>
          <div id="map"></div>
       </div>
@@ -21,7 +20,7 @@
             <h4><a href="/campgrounds/<%= campground._id %>"><%=campground.name%></a></h4>
             <p><%= campground.description %></p>
             <p>
-               <em>Submitted by: <a href="/profile/<%= campground.author.id %>"><%= campground.author.username %></a>, <%= moment(campground.createdAt).fromNow() %></em>
+               <em>Submitted by: <a href="/campgrounds/profile/<%= campground.author.id %>"><%= campground.author.username %></a>, <%= moment(campground.createdAt).fromNow() %></em>
             </p>
             <% if(currentUser && campground.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
             <a class="btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
@@ -75,8 +74,6 @@
                      </div>
                      <hr>
                      <% }); %>
-                     <h4><a href="/campgrounds/<%= campground._id %>/reviews"><i class="fa fa-pencil" aria-hidden="true"></i> See all reviews</a>
-                     </h4>
                      <% } %>
                      <div class="row" id="row-review">
                         <span class="pull-right">
@@ -141,7 +138,7 @@
                   <% } %>
                   <!--Print out the author username-->
                   <strong>
-                     <a href="/profile/<%= campground.author._id %>"><%= comment.author.username %></a>
+                     <a href="/campgrounds/profile/<%= campground.author._id %>"><%= comment.author.username %></a>
                   </strong>
                   <!--Show when the comment was made-->
                   <span class="pull-right"><%= moment(comment.createdAt).fromNow() %></span>

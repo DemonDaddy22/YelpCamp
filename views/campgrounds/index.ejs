@@ -16,7 +16,10 @@
             <% if(noMatch !== null) { %>
                 <h3 class="sub-head"><%= noMatch %></h3>
             <% } else { %>
-                <h3 class="sub-head">Our most popular campgrounds!</h3><br>
+                <% if (campgrounds.length === 0) { %>
+                <% } else { %>
+                    <h3 class="sub-head">Our most popular campgrounds!</h3><br>
+                <% } %>
             <% } %>
         </div>
     </div>

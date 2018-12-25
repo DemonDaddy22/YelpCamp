@@ -171,6 +171,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, upload.single('image'), 
                   return res.redirect("back");
               }
             }
+            
             campground.name = req.body.campground.name;
             campground.description = req.body.campground.description;
             campground.price = req.body.campground.price;
@@ -213,6 +214,6 @@ router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res){
 
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-};
+}
 
 module.exports = router;

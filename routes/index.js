@@ -6,6 +6,7 @@ var passport      = require("passport");
 var async         = require("async");
 var crypto        = require("crypto");
 var nodemailer    = require("nodemailer");
+var middleware    = require("../middleware");
 
 // root route
 router.get("/", function(req, res){
@@ -33,7 +34,7 @@ router.post("/register", function(req, res){
     User.register(newUser, req.body.password, function(err, user){
         if (err){
             console.log(err);
-            req.flash("error", err.message);
+            req.flash("error", "That e-mail ID is already being used by someone else, please try again with a different e-mail ID");
             return res.redirect("/register");
         }
         passport.authenticate("local")(req, res, function(){
@@ -64,29 +65,12 @@ router.get("/logout", function(req, res){
     res.redirect("/campgrounds");
 });
 
-// User profile
-router.get("/profile/:id", function(req, res) {
-  User.findById(req.params.id, function(err, foundUser) {
-    if(err || !foundUser) {
-      req.flash("error", "User not found. Please try again.");
-      return res.redirect("back");
-    }
-    Campground.find().where("author.id").equals(foundUser._id).exec(function(err, campgrounds) {
-      if(err) {
-        req.flash("error", "Something went wrong.");
-        return res.redirect("back");
-      }
-      res.render("users/show", {user: foundUser, campgrounds: campgrounds});
-    });
-  });
-});
-
 // password change route
-router.get("/changepw", function(req, res){
+router.get("/campgrounds/pw/changepw", middleware.isLoggedIn, function(req, res){
     res.render("change");
 });
 
-router.post('/changepw', function(req, res, next) {
+router.post('/campgrounds/pw/changepw', middleware.isLoggedIn, function(req, res, next) {
   async.waterfall([
     function(done) {
       crypto.randomBytes(20, function(err, buf) {
@@ -98,7 +82,12 @@ router.post('/changepw', function(req, res, next) {
       User.findOne({ email: req.body.email }, function(err, user) {
         if (err || !user) {
           req.flash('error', 'No account with that email address exists.');
-          return res.redirect('/changepw');
+          return res.redirect('/campgrounds/pw/changepw');
+        }
+        
+        if (req.user.email != user.email){
+          req.flash('error', 'Specified email does not match your email.');
+          return res.redirect('/campgrounds/pw/changepw');
         }
 
         user.resetPasswordToken = token;
@@ -123,7 +112,7 @@ router.post('/changepw', function(req, res, next) {
         subject: 'Node.js Password Reset',
         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'http://' + req.headers.host + '/campgrounds/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
       smtpTransport.sendMail(mailOptions, function(err) {
@@ -139,17 +128,17 @@ router.post('/changepw', function(req, res, next) {
 });
 
 // password reset route
-router.get('/reset/:token', function(req, res) {
+router.get('/campgrounds/reset/:token', function(req, res) {
   User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
     if (err || !user) {
       req.flash('error', 'Password reset token is invalid or has expired.');
-      return res.redirect('/forgot');
+      return res.redirect('/campgrounds/pw/changepw');
     }
     res.render('reset', {user: user,token: req.params.token});
   });
 });
 
-router.post('/reset/:token', function(req, res) {
+router.post('/campgrounds/reset/:token', function(req, res) {
   async.waterfall([
     function(done) {
       User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {

@@ -16,6 +16,11 @@ body{
 
 .thumbnail{
     padding: 0;
+    border-radius: 3px;
+}
+
+.thumbnail>img{
+    border-radius: inherit;
 }
 
 .delete-form{
@@ -95,4 +100,25 @@ body{
 
 .set-bot{
     margin-bottom: 15px;
+}
+
+.side-anchors{
+    color: #64676b;
+}
+
+.active-tab>a{
+    color: white;
+}
+
+.active-tab{
+    background-color: #64676b
+}
+
+.profile{
+    text-align: center
+}
+
+.profile-img{
+    height: 250px;
+    width: 275px;
 }
